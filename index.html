@@ -1,1 +1,197 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoldMate</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f5f8;
+            color: #24243a;
+            margin: 0;
+            padding: 30px 16px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #777;
+        }
+
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 9px;
+            font-size: 16px;
+            margin-top: 12px;
+        }
+
+        select {
+            border: 1px solid #ddd;
+            background: white;
+        }
+
+        button {
+            border: none;
+            background: #6558a5;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        #status {
+            color: #6558a5;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>FoldMate.</h1>
+            <p class="subtitle">Your laundry, folded smarter.</p>
+        </header>
+
+        <section class="panel">
+            <h2>Select your garment</h2>
+
+            <select id="garment">
+                <option value="T-shirt">T-shirt</option>
+                <option value="Trousers">Trousers</option>
+            </select>
+
+            <button onclick="addGarment()">
+                Add to folding queue
+            </button>
+        </section>
+
+        <section class="panel">
+            <h2>Folding queue</h2>
+            <ol id="queue">
+                <li>Your queue is empty.</li>
+            </ol>
+
+            <button onclick="startFolding()">
+                Start folding
+            </button>
+        </section>
+
+        <section class="panel">
+            <h2>Machine status</h2>
+            <p id="status">Waiting for garments.</p>
+        </section>
+
+    </div>
+
+    <script>
+        let clothes = [];
+        let isRunning = false;
+
+        function addGarment() {
+            const garment = document.getElementById("garment").value;
+
+            clothes.push(garment);
+
+            updateQueue();
+        }
+
+        function updateQueue() {
+            const queue = document.getElementById("queue");
+
+            queue.innerHTML = "";
+
+            clothes.forEach((item, index) => {
+                const li = document.createElement("li");
+
+                li.textContent = (index + 1) + ". " + item;
+
+                queue.appendChild(li);
+            });
+
+            if (clothes.length === 0) {
+                queue.innerHTML = "<li>Your queue is empty.</li>";
+            }
+        }
+
+        function startFolding() {
+            if (isRunning || clothes.length === 0) return;
+
+            isRunning = true;
+
+            let index = 0;
+
+            function foldNext() {
+                if (index >= clothes.length) {
+                    document.getElementById("status").textContent =
+                        "All garments completed!";
+
+                    isRunning = false;
+                    clothes = [];
+                    updateQueue();
+                    return;
+                }
+
+                const garment = clothes[index];
+
+                document.getElementById("status").textContent =
+                    "Please load your " + garment + ".";
+
+                setTimeout(() => {
+                    document.getElementById("status").textContent =
+                        "Folding your " + garment + "...";
+
+                    setTimeout(() => {
+                        document.getElementById("status").textContent =
+                            garment + " folded! Transferring to collection area.";
+
+                        index++;
+                        foldNext();
+                    }, 2000);
+
+                }, 2000);
+            }
+
+            foldNext();
+        }
+    </script>
+</body>
+</html>
+
