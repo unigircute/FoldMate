@@ -2,196 +2,644 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoldMate</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoldMate | Smart Laundry</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+:root {
+    --background: #f7f8f4;
+    --card: #ffffff;
+    --green: #758b72;
+    --dark: #28352c;
+    --muted: #899187;
+    --border: #e8ebe5;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f5f8;
-            color: #24243a;
-            margin: 0;
-            padding: 30px 16px;
-        }
+* { box-sizing: border-box; }
 
-        .container {
-            max-width: 600px;
-            margin: auto;
-        }
+body {
+    margin: 0;
+    padding: 25px 16px;
+    background: var(--background);
+    color: var(--dark);
+    font-family: Arial, sans-serif;
+}
 
-        header {
-            margin-bottom: 30px;
-        }
+.container {
+    max-width: 680px;
+    margin: auto;
+}
 
-        h1 {
-            font-size: 32px;
-            margin-bottom: 5px;
-        }
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
 
-        .subtitle {
-            color: #777;
-        }
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: -1px;
+}
 
-        .panel {
-            background: white;
-            padding: 22px;
-            border-radius: 16px;
-            margin-bottom: 18px;
-        }
+.logo span { color: var(--green); }
 
-        select, button {
-            width: 100%;
-            padding: 14px;
-            border-radius: 9px;
-            font-size: 16px;
-            margin-top: 12px;
-        }
+.tag {
+    font-size: 11px;
+    color: var(--green);
+    background: #eaf0e7;
+    padding: 8px 12px;
+    border-radius: 20px;
+}
 
-        select {
-            border: 1px solid #ddd;
-            background: white;
-        }
+h1 {
+    font-size: 30px;
+    margin: 0 0 8px;
+    letter-spacing: -1px;
+}
 
-        button {
-            border: none;
-            background: #6558a5;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+.section-title {
+    font-size: 17px;
+    margin: 26px 0 14px;
+}
 
-        li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
 
-        #status {
-            color: #6558a5;
-            font-weight: bold;
-        }
-    </style>
+.garments {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.garment {
+    background: #f8f9f6;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 17px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.garment.selected {
+    border: 2px solid var(--green);
+    background: #f0f4ed;
+}
+
+.garment:focus-visible {
+    outline: 3px solid #a6b99f;
+    outline-offset: 3px;
+}
+
+.emoji {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.garment strong {
+    display: block;
+    font-size: 14px;
+}
+
+.garment small {
+    color: var(--muted);
+    display: block;
+    margin-top: 5px;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.primary {
+    background: var(--green);
+    color: white;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.queue-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+}
+
+.queue-item:last-child { border-bottom: none; }
+
+.queue-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.queue-icon {
+    font-size: 24px;
+    background: #f3f5f0;
+    border-radius: 10px;
+    padding: 9px;
+}
+
+.queue-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.queue-number {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.remove {
+    background: #f7eeee;
+    color: #a05e5e;
+    padding: 9px 12px;
+}
+
+.empty {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.progress-track {
+    background: #edf0eb;
+    height: 8px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 17px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--green);
+    transition: width 0.3s;
+}
+
+.status {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+}
+
+.status strong { color: var(--dark); }
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.stat {
+    background: #f7f8f4;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.stat small { color: var(--muted); }
+
+.instruction {
+    background: #f4f6f1;
+    border-radius: 10px;
+    padding: 13px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #596b56;
+    line-height: 1.7;
+}
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    margin-top: 30px;
+}
+
+@media (max-width: 380px) {
+    .garments { grid-template-columns: 1fr 1fr; }
+    body { padding: 20px 12px; }
+}
+</style>
 </head>
 
 <body>
-    <div class="container">
+<div class="container">
 
-        <header>
-            <h1>FoldMate.</h1>
-            <p class="subtitle">Your laundry, folded smarter.</p>
-        </header>
+<header>
+    <div class="logo">fold<span>mate.</span></div>
+    <div class="tag">V2 · PROTOTYPE</div>
+</header>
 
-        <section class="panel">
-            <h2>Select your garment</h2>
+<h1>Your laundry,<br>beautifully organised.</h1>
+<p class="subtitle">
+    Select your garments and let FoldMate handle the folding.
+</p>
 
-            <select id="garment">
-                <option value="T-shirt">T-shirt</option>
-                <option value="Trousers">Trousers</option>
-            </select>
+<h2 class="section-title">01 / Select garment</h2>
 
-            <button onclick="addGarment()">
-                Add to folding queue
-            </button>
-        </section>
+<div class="card">
 
-        <section class="panel">
-            <h2>Folding queue</h2>
-            <ol id="queue">
-                <li>Your queue is empty.</li>
-            </ol>
+    <div class="garments">
 
-            <button onclick="startFolding()">
-                Start folding
-            </button>
-        </section>
+        <button class="garment selected"
+            onclick="selectGarment('T-shirt', this)">
+            <div class="emoji">👕</div>
+            <strong>T-shirt</strong>
+            <small>Side fold + bottom fold</small>
+        </button>
 
-        <section class="panel">
-            <h2>Machine status</h2>
-            <p id="status">Waiting for garments.</p>
-        </section>
+        <button class="garment"
+            onclick="selectGarment('Trousers', this)">
+            <div class="emoji">👖</div>
+            <strong>Trousers</strong>
+            <small>Leg alignment + fold</small>
+        </button>
+
+        <button class="garment"
+            onclick="selectGarment('Tank top', this)">
+            <div class="emoji">🎽</div>
+            <strong>Tank top</strong>
+            <small>Side fold + bottom fold</small>
+        </button>
+
+        <button class="garment"
+            onclick="selectGarment('Long-sleeve shirt', this)">
+            <div class="emoji">👔</div>
+            <strong>Long-sleeve shirt</strong>
+            <small>Sleeve fold + body fold</small>
+        </button>
+
+        <button class="garment"
+            onclick="selectGarment('Shorts', this)">
+            <div class="emoji">🩳</div>
+            <strong>Shorts</strong>
+            <small>Half fold + final fold</small>
+        </button>
 
     </div>
 
-    <script>
-        let clothes = [];
-        let isRunning = false;
+    <button class="primary" id="addButton" onclick="addGarment()">
+        + Add to folding queue
+    </button>
 
-        function addGarment() {
-            const garment = document.getElementById("garment").value;
+</div>
 
-            clothes.push(garment);
+<h2 class="section-title">02 / Folding queue</h2>
 
-            updateQueue();
-        }
+<div class="card">
 
-        function updateQueue() {
-            const queue = document.getElementById("queue");
+    <div id="queue">
+        <div class="empty">Your folding queue is empty.</div>
+    </div>
 
-            queue.innerHTML = "";
+    <button class="primary" id="startButton" onclick="startFolding()" disabled>
+        Start folding →
+    </button>
 
-            clothes.forEach((item, index) => {
-                const li = document.createElement("li");
+</div>
 
-                li.textContent = (index + 1) + ". " + item;
+<h2 class="section-title">03 / Machine activity</h2>
 
-                queue.appendChild(li);
-            });
+<div class="card">
 
-            if (clothes.length === 0) {
-                queue.innerHTML = "<li>Your queue is empty.</li>";
-            }
-        }
+    <div class="status" id="status" aria-live="polite">
+        <strong>Machine ready</strong><br>
+        Add garments to begin.
+    </div>
 
-        function startFolding() {
-            if (isRunning || clothes.length === 0) return;
+    <div class="instruction" id="instruction">
+        Your folding instructions will appear here.
+    </div>
 
-            isRunning = true;
+    <div class="progress-track">
+        <div class="progress-fill" id="progress"></div>
+    </div>
 
-            let index = 0;
+    <div class="status" id="progressText">
+        Waiting for instructions.
+    </div>
 
-            function foldNext() {
-                if (index >= clothes.length) {
-                    document.getElementById("status").textContent =
-                        "All garments completed!";
+</div>
 
-                    isRunning = false;
-                    clothes = [];
-                    updateQueue();
-                    return;
-                }
+<h2 class="section-title">04 / Collection area</h2>
 
-                const garment = clothes[index];
+<div class="card">
 
-                document.getElementById("status").textContent =
-                    "Please load your " + garment + ".";
+    <div class="stats">
+        <div class="stat">
+            <strong id="completed">0</strong>
+            <small>Garments completed</small>
+        </div>
 
-                setTimeout(() => {
-                    document.getElementById("status").textContent =
-                        "Folding your " + garment + "...";
+        <div class="stat">
+            <strong id="remaining">0</strong>
+            <small>Garments remaining</small>
+        </div>
+    </div>
 
-                    setTimeout(() => {
-                        document.getElementById("status").textContent =
-                            garment + " folded! Transferring to collection area.";
+    <div class="status" id="collection" style="margin-top:15px;">
+        No folded garments collected yet.
+    </div>
 
-                        index++;
-                        foldNext();
-                    }, 2000);
+</div>
 
-                }, 2000);
-            }
+<footer>
+    FOLDMATE · SMART LAUNDRY SYSTEM<br>
+    Software simulation — physical hardware not connected.
+</footer>
 
-            foldNext();
-        }
-    </script>
+</div>
+
+<script>
+
+const instructions = {
+    "T-shirt": [
+        "Please place your T-shirt inside the marked loading area.",
+        "Fold the left side and sleeve inward.",
+        "Fold the right side and sleeve inward.",
+        "Fold the bottom section upwards.",
+        "Transfer the folded garment to the collection area."
+    ],
+
+    "Trousers": [
+        "Please align your trousers on the loading platform.",
+        "Align both trouser legs.",
+        "Fold one leg over the other.",
+        "Fold the trousers upwards.",
+        "Transfer the folded garment to the collection area."
+    ],
+
+    "Tank top": [
+        "Please place your tank top on the loading platform.",
+        "Fold the left side inward.",
+        "Fold the right side inward.",
+        "Fold the bottom upwards.",
+        "Transfer the folded garment to the collection area."
+    ],
+
+    "Long-sleeve shirt": [
+        "Please place your shirt on the loading platform.",
+        "Fold the left sleeve towards the centre.",
+        "Fold the right sleeve towards the centre.",
+        "Fold the body upwards.",
+        "Transfer the folded garment to the collection area."
+    ],
+
+    "Shorts": [
+        "Please place your shorts on the loading platform.",
+        "Align both sides of the shorts.",
+        "Fold one half over the other.",
+        "Fold upwards if required.",
+        "Transfer the folded garment to the collection area."
+    ]
+};
+
+const icons = {
+    "T-shirt": "👕",
+    "Trousers": "👖",
+    "Tank top": "🎽",
+    "Long-sleeve shirt": "👔",
+    "Shorts": "🩳"
+};
+
+let selectedGarment = "T-shirt";
+let queue = [];
+let completed = 0;
+let running = false;
+let currentIndex = 0;
+let stepIndex = 0;
+let timer = null;
+
+function selectGarment(type, element) {
+
+    if (running) return;
+
+    selectedGarment = type;
+
+    document.querySelectorAll(".garment").forEach(card => {
+        card.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+}
+
+function addGarment() {
+
+    if (running) return;
+
+    queue.push({
+        type: selectedGarment,
+        id: Date.now() + Math.random()
+    });
+
+    updateQueue();
+
+    document.getElementById("status").innerHTML =
+        "<strong>Garment added</strong><br>" +
+        selectedGarment + " added to your folding queue.";
+
+    document.getElementById("instruction").textContent =
+        "Your garment is ready for processing.";
+}
+
+function removeGarment(id) {
+
+    if (running) return;
+
+    queue = queue.filter(item => item.id !== id);
+
+    updateQueue();
+}
+
+function updateQueue() {
+
+    const container = document.getElementById("queue");
+
+    if (queue.length === 0) {
+
+        container.innerHTML =
+            '<div class="empty">Your folding queue is empty.</div>';
+
+    } else {
+
+        container.innerHTML = "";
+
+        queue.forEach((item, index) => {
+
+            const div = document.createElement("div");
+            div.className = "queue-item";
+
+            const left = document.createElement("div");
+            left.className = "queue-left";
+
+            const icon = document.createElement("div");
+            icon.className = "queue-icon";
+            icon.textContent = icons[item.type];
+
+            const info = document.createElement("div");
+
+            const name = document.createElement("div");
+            name.className = "queue-name";
+            name.textContent = item.type;
+
+            const number = document.createElement("div");
+            number.className = "queue-number";
+            number.textContent = "Item " + (index + 1);
+
+            info.appendChild(name);
+            info.appendChild(number);
+
+            left.appendChild(icon);
+            left.appendChild(info);
+
+            const remove = document.createElement("button");
+            remove.className = "remove";
+            remove.textContent = "Remove";
+            remove.onclick = () => removeGarment(item.id);
+
+            div.appendChild(left);
+            div.appendChild(remove);
+
+            container.appendChild(div);
+        });
+    }
+
+    document.getElementById("remaining").textContent = queue.length;
+
+    document.getElementById("startButton").disabled =
+        queue.length === 0 || running;
+
+    document.getElementById("addButton").disabled = running;
+}
+
+function startFolding() {
+
+    if (running || queue.length === 0) return;
+
+    running = true;
+    currentIndex = 0;
+    stepIndex = 0;
+    completed = 0;
+
+    document.getElementById("completed").textContent = completed;
+
+    updateQueue();
+
+    foldNext();
+}
+
+function foldNext() {
+
+    if (currentIndex >= queue.length) {
+
+        running = false;
+
+        document.getElementById("status").innerHTML =
+            "<strong>Folding complete!</strong><br>" +
+            "All garments have been processed.";
+
+        document.getElementById("instruction").textContent =
+            "Your garments have been transferred to the collection area.";
+
+        document.getElementById("progress").style.width = "100%";
+
+        document.getElementById("progressText").textContent =
+            "100% complete";
+
+        document.getElementById("collection").textContent =
+            completed + " folded garments collected.";
+
+        queue = [];
+        updateQueue();
+
+        return;
+    }
+
+    const garment = queue[currentIndex];
+    const steps = instructions[garment.type];
+
+    stepIndex = 0;
+
+    document.getElementById("status").innerHTML =
+        "<strong>Processing " + garment.type + "</strong><br>" +
+        "Item " + (currentIndex + 1) + " of " + queue.length;
+
+    runStep(steps);
+}
+
+function runStep(steps) {
+
+    if (stepIndex >= steps.length) {
+
+        completed++;
+
+        document.getElementById("completed").textContent = completed;
+
+        currentIndex++;
+
+        document.getElementById("progress").style.width =
+            (currentIndex / queue.length * 100) + "%";
+
+        foldNext();
+
+        return;
+    }
+
+    document.getElementById("instruction").textContent =
+        steps[stepIndex];
+
+    document.getElementById("progressText").textContent =
+        "Garment " + (currentIndex + 1) +
+        " of " + queue.length +
+        " · Step " + (stepIndex + 1) +
+        " of " + steps.length;
+
+    stepIndex++;
+
+    timer = setTimeout(() => {
+        runStep(steps);
+    }, 1800);
+}
+
+updateQueue();
+
+</script>
 </body>
 </html>
-
